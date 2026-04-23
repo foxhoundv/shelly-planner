@@ -1,5 +1,7 @@
 # Shelly Planner
 
+Version: 1.0
+
 Dockerized Flask web app for planning physical wiring layouts using Shelly PRO devices.
 
 ## Current Features
