@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Add New Device | Shelly Planner</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
+  </head>
+  <body>
+    <div class="backdrop"></div>
+    <main class="device-builder-layout">
+      <aside class="panel builder-sidebar">
+        <div class="builder-title-row">
+          <div>
+            <p class="eyebrow">Device Authoring</p>
+            <h1>Add New Device</h1>
+          </div>
+          <a class="ghost nav-link-button" href="/planner">Back To Planner</a>
+        </div>
+        <p>
+          Upload one PNG, click the image to tag exact pixels, assign terminal keys, and generate a ready-to-load device profile.
+        </p>
+
+        <form id="device-builder-form" class="card builder-form">
+          <label for="device-name">Device full name</label>
+          <input id="device-name" name="name" type="text" placeholder="Shelly Pro 4PM" required />
+
+          <label for="device-type">Shelly device type</label>
+          <select id="device-type" name="device_type" required>
+            <option value="Standard">Standard</option>
+            <option value="PRO">PRO</option>
+            <option value="Add-On">Add-On</option>
+          </select>
+
+          <div class="builder-two-up">
+            <div>
+              <label for="device-width">Planner width (inches)</label>
+              <input id="device-width" name="width_in" type="number" min="0.1" step="0.01" value="0.75" required />
+            </div>
+            <div>
+              <label for="device-height">Planner height (inches)</label>
+              <input id="device-height" name="height_in" type="number" min="0.1" step="0.01" value="3.70" required />
+            </div>
+          </div>
+
+          <label for="device-description">Description <span style="font-weight:400;opacity:.65">(optional)</span></label>
+          <textarea id="device-description" name="description" rows="2" placeholder="Brief description of this device…"></textarea>
+
+          <label for="device-image">PNG device image</label>
+          <input id="device-image" name="image" type="file" accept="image/png,.png" required />
+
+          <div class="builder-meta-grid">
+            <div class="stat-card">
+              <span class="stat-label">Slug</span>
+              <strong id="slug-preview">-</strong>
+            </div>
+            <div class="stat-card">
+              <span class="stat-label">Image Size</span>
+              <strong id="image-size-preview">-</strong>
+            </div>
+            <div class="stat-card">
+              <span class="stat-label">Mapped Terminals</span>
+              <strong id="mapping-count">0</strong>
+            </div>
+          </div>
+
+          <div class="zoom-controls builder-zoom-controls">
+            <label for="image-zoom-range">Zoom</label>
+            <input id="image-zoom-range" type="range" min="1" max="1.5" step="0.05" value="1" />
+            <span id="image-zoom-value">100%</span>
+          </div>
+
+          <button id="submit-device-btn" type="submit" class="primary">Confirm New Device</button>
+          <p id="builder-status" class="builder-status" aria-live="polite"></p>
+        </form>
+
+        <section class="card">
+          <div class="section-head">
+            <h2>Mapped Terminals</h2>
+            <button id="clear-mappings-btn" type="button" class="ghost compact-btn">Clear</button>
+          </div>
+          <p class="small">Click anywhere on the image, pick a terminal key, and repeat until every required terminal is mapped.</p>
+          <div id="mapping-list" class="mapping-list empty">
+            <p>No terminals mapped yet.</p>
+          </div>
+        </section>
+      </aside>
+
+      <section class="builder-canvas-wrap workspace-wrap">
+        <header>
+          <div class="header-row">
+            <div>
+              <h2>Terminal Mapping Canvas</h2>
+              <p>Uploaded PNG fills this viewport. Click a pixel to assign a terminal from the shared catalog.</p>
+            </div>
+          </div>
+        </header>
+
+        <div class="builder-stage-shell">
+          <div id="builder-empty-state" class="builder-empty-state">
+            <strong>Upload a PNG to begin</strong>
+            <span>The image will scale to fit, and clicks will record exact source pixels.</span>
+          </div>
+
+          <div id="builder-stage" class="builder-stage hidden">
+            <div id="builder-image-frame" class="builder-image-frame">
+              <img id="builder-image" class="builder-image" alt="Uploaded device preview" />
+              <div id="builder-markers" class="builder-markers"></div>
+            </div>
+
+            <div id="terminal-picker" class="terminal-picker hidden" role="dialog" aria-label="Assign terminal">
+              <p id="terminal-picker-coords" class="small terminal-picker-coords"></p>
+              <label for="terminal-select">Terminal</label>
+              <select id="terminal-select">
+                <option value="L">L</option>
+                <option value="N">N</option>
+                <option value="O">O</option>
+                <option value="I">I</option>
+                <option value="SW">SW</option>
+                <option value="┴">┴</option>
+                <option value="+">+</option>
+              </select>
+              <div class="button-row">
+                <button id="save-terminal-btn" type="button" class="primary">Assign</button>
+                <button id="cancel-terminal-btn" type="button" class="ghost">Cancel</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script src="{{ url_for('static', filename='js/add-device.js') }}"></script>
+  </body>
+</html>

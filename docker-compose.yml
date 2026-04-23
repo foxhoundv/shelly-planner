@@ -1,0 +1,11 @@
+services:
+  shelly-planner:
+    build: .
+    container_name: shelly-planner
+    ports:
+      - "8000:8000"
+    environment:
+      SHELLY_PLANNER_DATA_DIR: /data
+    volumes:
+      - ./import:/app/import
+    restart: unless-stopped

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tutorial | Shelly Planner</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
+  </head>
+  <body>
+    <div class="backdrop"></div>
+    <main class="welcome-layout">
+      <section class="welcome-card tutorial-card">
+        <p class="eyebrow">Shelly Planner</p>
+        <h1>Tutorial</h1>
+
+        <h2>Adding Devices</h2>
+        <p>
+          In the planner, use tabs on the left: Junction Box, Wiring Device, Shelly Devices, and Import.
+          Choose a device card and click + to place it in preview mode, then click on the grid to drop it.
+        </p>
+
+        <h2>Removing Devices</h2>
+        <p>
+          Click a placed item to select it, then use the trash button in the planner header. If a wire is selected,
+          the same delete action removes only that wire.
+        </p>
+
+        <h2>Device Types</h2>
+        <p>
+          Shelly devices provide terminal mappings from imported profiles. Wiring devices are custom field devices
+          like switches and receptacles. Junction boxes provide knock-out anchors and can route circuits between devices.
+          Add-ons act as connector modules with mapped ports.
+        </p>
+
+        <h2>Wiring Devices Together</h2>
+        <p>
+          Click a source anchor such as a junction box knock-out or a device terminal, choose circuit and wire color,
+          then click intermediate waypoints and finally the destination anchor. Repeat for each conductor as needed.
+          KO-to-KO links between junction boxes are drawn as thick gray feeder links.
+        </p>
+
+        <div class="welcome-actions">
+          <button id="tutorial-back-btn" class="ghost" type="button">Back To Previous Page</button>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      document.getElementById("tutorial-back-btn").addEventListener("click", () => {
+        window.history.back();
+      });
+    </script>
+  </body>
+</html>

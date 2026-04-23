@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Welcome | Shelly Planner</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
+  </head>
+  <body>
+    <div class="backdrop"></div>
+    <main class="welcome-layout">
+      <section class="welcome-card">
+        <p class="eyebrow">Shelly Planner</p>
+        <h1>Welcome</h1>
+        <p>
+          This web app helps you build and share wiring layouts visually. Place junction boxes, Shelly devices,
+          wiring devices, and add-ons onto the planning grid, then connect terminals with realistic circuit wires.
+        </p>
+        <p>
+          Use the left panel tabs to add equipment, then drag and position items on the grid. You can manually wire
+          from knock-outs and terminals, or use guided controls to speed up common wiring paths.
+        </p>
+        <ul class="welcome-list">
+          <li>Plan layouts by dragging items onto the grid.</li>
+          <li>Wire between junction box knock-outs, device terminals, and connector ports.</li>
+          <li>Save your planning progress automatically in your browser session.</li>
+          <li>Export and import complete projects for collaboration.</li>
+        </ul>
+        <div class="welcome-actions">
+          <a class="primary nav-link-button" href="/planner">Go To Planning Area</a>
+          <a class="ghost nav-link-button" href="/tutorial">Open Tutorial</a>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

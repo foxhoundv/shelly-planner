@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Shelly Planner</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css"
+    />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
+  </head>
+  <body>
+    <div class="backdrop"></div>
+    <main class="layout">
+      <aside class="panel">
+        <h1>Shelly Wiring Planner</h1>
+        <p>
+          Drag parts in the workspace, choose a junction box and a device, then auto-draw US
+          circuit bundles.
+        </p>
+        <div class="planner-tabs" role="tablist" aria-label="Planner sections">
+          <button type="button" class="tab-btn active" data-tab="junction" role="tab" aria-selected="true">Junction Box</button>
+          <button type="button" class="tab-btn" data-tab="wiring-device" role="tab" aria-selected="false">Wiring Device</button>
+          <button type="button" class="tab-btn" data-tab="shelly" role="tab" aria-selected="false">Shelly Devices</button>
+          <button type="button" class="tab-btn" data-tab="import" role="tab" aria-selected="false">Import</button>
+        </div>
+
+        <div class="tab-panels">
+          <div class="tab-panel active" data-tab-panel="junction" role="tabpanel">
+            <section class="card">
+              <h2>Choose A Junction Box</h2>
+              <div id="junction-step-chooser" class="wizard-step">
+                <label for="junction-type">Junction Box Type</label>
+                <select id="junction-type">
+                  <option value="">Choose type...</option>
+                  <option value="Metal">Metal</option>
+                  <option value="Plastic">Plastic</option>
+                  <option value="Fiber">Fiber</option>
+                  <option value="PVC">PVC</option>
+                </select>
+
+                <label for="junction-environment">Environment</label>
+                <select id="junction-environment">
+                  <option value="">Choose environment...</option>
+                  <option value="Indoor">Indoor</option>
+                  <option value="Outdoor">Outdoor</option>
+                </select>
+
+                <label for="junction-gang">Gang</label>
+                <select id="junction-gang">
+                  <option value="">Choose gang...</option>
+                  <option value="Round">Round</option>
+                  <option value="Single Gang">Single Gang</option>
+                  <option value="Two Gang">Two Gang</option>
+                  <option value="Three Gang">Three Gang</option>
+                  <option value="Four Gang">Four Gang</option>
+                </select>
+
+                <div class="button-row">
+                  <button id="junction-clear-btn" type="button" class="ghost">Clear</button>
+                  <button id="junction-next-btn" type="button" class="primary">Next</button>
+                </div>
+              </div>
+
+              <div id="junction-step-config" class="wizard-step hidden">
+                <p id="junction-selected-summary" class="small"></p>
+
+                <div id="junction-custom-size" class="hidden">
+                  <label for="box-width">Width (inches)</label>
+                  <input id="box-width" type="number" min="1" value="12" />
+
+                  <label for="box-height">Height (inches)</label>
+                  <input id="box-height" type="number" min="1" value="12" />
+                </div>
+
+                <div class="button-row">
+                  <button id="junction-back-btn" type="button" class="ghost">Back</button>
+                  <button id="add-box-btn" type="button" class="primary">Add Junction Box</button>
+                </div>
+              </div>
+            </section>
+
+            <section class="card">
+              <h2>Draw Wiring</h2>
+              <label for="source-box">Source Junction Box</label>
+              <select id="source-box"></select>
+
+              <label for="target-device">Target device</label>
+              <select id="target-device"></select>
+
+              <div class="button-row">
+                <button id="draw-wires-btn" class="primary">Draw Circuits</button>
+                <button id="clear-wires-btn" class="ghost">Clear</button>
+              </div>
+              <p class="small">
+                Wire colors follow US standard: black hot, white neutral, red second hot, green ground.
+              </p>
+            </section>
+          </div>
+
+          <div class="tab-panel" data-tab-panel="wiring-device" role="tabpanel" aria-hidden="true">
+            <section class="card">
+              <h2>Wiring Device</h2>
+              <p class="small">Select a wiring device to view details, then click + to add it to the planner.</p>
+              <div id="wiring-device-list" class="shelly-device-list" aria-label="Wiring devices"></div>
+            </section>
+          </div>
+
+          <div class="tab-panel" data-tab-panel="shelly" role="tabpanel" aria-hidden="true">
+            <section class="card">
+              <h2>Shelly Devices</h2>
+              <p class="small">Select a Shelly device to view details, then click + to add it to the planner.</p>
+              <div id="shelly-device-list" class="shelly-device-list" aria-label="Shelly devices"></div>
+            </section>
+          </div>
+
+          <div class="tab-panel" data-tab-panel="import" role="tabpanel" aria-hidden="true">
+            <section class="card">
+              <h2>Import</h2>
+              <div class="import-actions">
+                <a class="primary nav-link-button" href="/devices/new">New Shelly Device</a>
+                <a class="ghost nav-link-button" href="/junction-boxes/new">New Junction Box</a>
+                <a class="ghost nav-link-button" href="/wiring-devices/new">New Wiring Device</a>
+              </div>
+            </section>
+          </div>
+        </div>
+      </aside>
+
+      <section class="workspace-wrap">
+        <header>
+          <div class="header-row">
+            <h2>Planning Grid</h2>
+            <div class="header-actions">
+              <button id="clear-grid-btn" class="ghost compact-btn" type="button">Clear Grid</button>
+              <button id="screenshot-grid-btn" class="ghost compact-btn" type="button">Screenshot</button>
+              <button id="export-project-btn" class="ghost compact-btn icon-btn" type="button" title="Export project">
+                <span class="mdi mdi-export-variant"></span>
+                <span>Export Project</span>
+              </button>
+              <button id="import-project-btn" class="ghost compact-btn icon-btn" type="button" title="Import project">
+                <span class="mdi mdi-import"></span>
+                <span>Import Project</span>
+              </button>
+              <input id="import-project-input" type="file" accept="application/json,.json" class="hidden" />
+              <select id="addon-type" aria-label="Add-on type"></select>
+              <button id="add-addon-btn" class="ghost compact-btn" title="Add wiring add-on">Add</button>
+              <button id="delete-item-btn" class="trash-btn" aria-label="Delete selected item" title="Delete selected item">
+                <span class="mdi mdi-trash-can"></span>
+              </button>
+            </div>
+          </div>
+          <p>Drag components around. Wires refresh as components move.</p>
+          <p id="wire-mode-hint" class="wire-mode-hint">Click a junction box knock-out to start a wire.</p>
+          <div class="zoom-controls">
+            <label for="zoom-range">Zoom</label>
+            <input id="zoom-range" type="range" min="0.5" max="2.5" step="0.1" value="1" />
+            <span id="zoom-value">100%</span>
+          </div>
+        </header>
+
+        <div class="planner-surface">
+          <div class="ruler-corner"></div>
+          <canvas id="ruler-top" class="ruler ruler-top"></canvas>
+          <canvas id="ruler-left" class="ruler ruler-left"></canvas>
+
+          <div id="workspace-viewport" class="workspace-viewport">
+            <div id="workspace" class="workspace">
+              <svg id="wire-layer" class="wire-layer"></svg>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <div id="wire-config-popover" class="wire-config-popover hidden" role="dialog" aria-label="Wire source configuration">
+      <label for="wire-circuit-select">Entering Circuit</label>
+      <select id="wire-circuit-select"></select>
+
+      <label for="wire-color-select">Wire Color</label>
+      <select id="wire-color-select">
+        <option value="hot">Black (Hot)</option>
+        <option value="neutral">White (Neutral)</option>
+        <option value="red">Red (Second Hot)</option>
+        <option value="ground">Green (Ground)</option>
+      </select>
+
+      <div class="button-row">
+        <button id="wire-start-btn" class="primary">Start Wire</button>
+        <button id="wire-cancel-btn" class="ghost">Cancel</button>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+  </body>
+</html>
