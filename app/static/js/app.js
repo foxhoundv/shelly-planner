@@ -1087,14 +1087,23 @@ function renderItems() {
           if (port.dataset.portAvailable !== "true") {
             return;
           }
-          completePendingWire({
-            kind: "connector-port",
-            itemId: item.id,
-            key: port.dataset.portKey,
-            xIn: getPointerInches(ev).x,
-            yIn: getPointerInches(ev).y,
-            terminal: port.dataset.portKey,
-          });
+          if (state.pendingWire) {
+            completePendingWire({
+              kind: "connector-port",
+              itemId: item.id,
+              key: port.dataset.portKey,
+              xIn: getPointerInches(ev).x,
+              yIn: getPointerInches(ev).y,
+              terminal: port.dataset.portKey,
+            });
+            return;
+          }
+          openWireSourcePopover(
+            { kind: "connector-port", itemId: item.id, key: port.dataset.portKey },
+            1,
+            ev.clientX,
+            ev.clientY,
+          );
         });
       }
     }
@@ -1386,7 +1395,7 @@ function updateWireModeUi() {
     el.wireModeHint.textContent = `${label} wire active. Click the workspace to add waypoints, then click a connector port, Shelly terminal, or junction box knock-out.`;
     el.wireModeHint.classList.add("active");
   } else {
-    el.wireModeHint.textContent = "Click a junction box knock-out to start a wire.";
+    el.wireModeHint.textContent = "Click a junction box knock-out, connector port, or device terminal to start a wire.";
     el.wireModeHint.classList.remove("active");
   }
 }
@@ -2298,7 +2307,7 @@ function makeDraggable(node, itemId) {
     if (state.pendingPlacement) {
       return;
     }
-    if (ev.target.closest(".ko-anchor") || ev.target.closest(".ko-badge") || ev.target.closest(".connector-port") || ev.target.closest(".terminal-anchor")) {
+    if (ev.target.closest(".ko-anchor") || ev.target.closest(".ko-badge") || ev.target.closest(".connector-port") || ev.target.closest(".connector-badge") || ev.target.closest(".terminal-anchor") || ev.target.closest(".terminal-badge")) {
       return;
     }
     if (state.pendingWire) {
